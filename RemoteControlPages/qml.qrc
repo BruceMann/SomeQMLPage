@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>LoginPage.qml</file>
+        <file>ChooseClassPage.qml</file>
+        <file>TestPage.qml</file>
+        <file>GroupManage.qml</file>
     </qresource>
 </RCC>
