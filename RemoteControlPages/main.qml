@@ -11,7 +11,11 @@ Window {
     title: qsTr("HuDong Class")
 
 
-//    TestPage{
+    GroupManage{
+        anchors.fill: parent
+    }
+
+//    Testpage2{
 //        anchors.fill: parent
 //    }
 
@@ -23,19 +27,31 @@ Window {
 //        anchors.fill: parent
 //    }
 
+//    Component{
+//        id:loginPageCom
+//        LoginPage{
+//            onLoginBtnClicked:{
+//                mainView.pop();
+//                mainView.push(chooseClassPageCom)
+//            }
+//        }
+//    }
 
+//    Component{
+//        id:chooseClassPageCom
+//        ChooseClassPage{
+//            onBackToLoginBtnClicked:{
+//                mainView.pop();
+//                mainView.push(loginPageCom)
+//            }
+//        }
 
-        StackView{
-            id:mainView
-            anchors.fill: parent
-            initialItem: LoginPage{
-                id:loginPage
-                onLoginBtnClicked:     {
-                    console.log("AAAAAAAA")
-                    mainView.pop()
-                    mainView.push("qrc:/ChooseClassPage.qml")
-                }
-            }
-        }
+//    }
+
+//    StackView{
+//        id:mainView
+//        anchors.fill: parent
+//        initialItem: loginPageCom
+//    }
 }
 

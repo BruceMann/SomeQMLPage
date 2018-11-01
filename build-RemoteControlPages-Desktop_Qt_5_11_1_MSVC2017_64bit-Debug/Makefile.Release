@@ -162,11 +162,18 @@ compiler_rcc_clean:
 	-$(DEL_FILE) release\qrc_qml.cpp
 release\qrc_qml.cpp: ..\RemoteControlPages\qml.qrc \
 		C:\Qt\Qt5.11.1\5.11.1\msvc2017_64\bin\rcc.exe \
+		..\RemoteControlPages\Testpage5.qml \
 		..\RemoteControlPages\ChooseClassPage.qml \
+		..\RemoteControlPages\Testpage4.qml \
+		..\RemoteControlPages\Testpage3.qml \
 		..\RemoteControlPages\GroupManage.qml \
+		..\RemoteControlPages\ChooseStudentPage.qml \
 		..\RemoteControlPages\LoginPage.qml \
+		..\RemoteControlPages\Testpage2.qml \
 		..\RemoteControlPages\TestPage.qml \
-		..\RemoteControlPages\main.qml
+		..\RemoteControlPages\main.qml \
+		..\RemoteControlPages\Images\areow1.png \
+		..\RemoteControlPages\Images\arrow2.png
 	C:\Qt\Qt5.11.1\5.11.1\msvc2017_64\bin\rcc.exe -name qml ..\RemoteControlPages\qml.qrc -o release\qrc_qml.cpp
 
 compiler_moc_predefs_make_all: release\moc_predefs.h

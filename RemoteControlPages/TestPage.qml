@@ -4,61 +4,99 @@ import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.4
 
 Item{
-    id:container
+    id:root
 
     Component {
         id: sectionHeading
-        Rectangle {
-            width: container.width
-            height: childrenRect.height
-            color: "lightsteelblue"
 
+        Rectangle {
+            width: root.width
+            height: 50
+            color: "lightsteelblue"
             Text {
                 text: section
                 font.bold: true
                 font.pixelSize: 20
+                anchors.centerIn: parent
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+                    console.log(section)
+                }
             }
         }
     }
+
+    Component{
+        id:itemDelegate
+        Rectangle{
+            id:itemBox
+            width: root.width
+            height:50
+            RowLayout{
+                spacing: 10
+                Layout.alignment: Qt.AlignLeft
+                Layout.fillWidth: true
+
+                Rectangle{
+                    width: 10
+                    height: 10
+                    color:"red"
+                    Layout.leftMargin: 10
+                }
+
+                Text {
+                    text: name
+                    font.pixelSize: 18
+                }
+            }
+        }
+    }
+
 
     ListModel{
         id:animalsModel
         ListElement{
             name:"ggg"
-            size:"Small"
+            team:"Small"
         }
         ListElement{
             name:"Parrot"
-            size:"Small"
+            team:"Small"
         }
         ListElement{
             name:"Rabbit"
-            size:"Small"
+            team:"Small"
         }
 
         ListElement{
             name:"Dog"
-            size:"Medium"
+            team:"Medium"
         }
         ListElement{
             name:"Cat"
-            size:"Medium"
+            team:"Medium"
         }
 
         ListElement{
             name:"KKK"
-            size:"Large"
+            team:"Large"
         }
         ListElement{
             name:"Elephant"
-            size:"Large"
+            team:"Large"
         }
         ListElement{
             name:"Tiger"
-            size:"Large"
+            team:"Large"
         }
 
     }
+
 
     ListView {
         id: view
@@ -66,9 +104,9 @@ Item{
         anchors.bottom: parent.bottom
         width: parent.width
         model: animalsModel
-        delegate: Text { text: name; font.pixelSize: 18 }
+        delegate: itemDelegate
 
-        section.property: "size"
+        section.property: "team"
         section.criteria: ViewSection.FullString
         section.delegate: sectionHeading
     }

@@ -7,6 +7,8 @@ Rectangle {
     id:chooseClassPage
     color:"#F8FCFF"
 
+    signal backToLoginBtnClicked
+
     Column{
         width: parent.width
         //title
@@ -192,6 +194,11 @@ Rectangle {
             background: Rectangle{
                 radius: 55
                 color: "#FF7141"
+            }
+
+            onClicked: {
+                console.log("adcddac")
+                chooseClassPage.backToLoginBtnClicked()
             }
         }
         DropShadow {

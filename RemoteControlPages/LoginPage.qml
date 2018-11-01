@@ -79,9 +79,6 @@ Rectangle {
             source: userName
         }
 
-
-
-
         //passWord
         TextField{
             id:passWord

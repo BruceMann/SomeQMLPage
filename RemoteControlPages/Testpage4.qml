@@ -1,7 +1,7 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.0
 import QtQuick.Layouts 1.11
-import QtGraphicalEffects 1.0
+import QtQuick.Controls 2.4
+
 
 Item {
     //    width: 200
@@ -100,13 +100,6 @@ Item {
 
             Loader {
                 id: subItemLoader
-                height:item.model.count*55
-
-                Behavior on height {
-                    NumberAnimation{
-                        duration: 300
-                    }
-                }
 
                 // This is a workaround for a bug/feature in the Loader element. If sourceComponent is set to null
                 // the Loader element retains the same height it had when sourceComponent was set. Setting visible
@@ -121,79 +114,62 @@ Item {
 
     Component {
         id: subItemColumnDelegate
-        //        Column {
-
-        ListView {
-            clip:true
+        Column {
             property alias model : subItemRepeater.model
             width: root.width
-            height: model.length*55
-            id: subItemRepeater
+            Repeater {
+                id: subItemRepeater
 
-
-            delegate: SwipeDelegate {
-                id:swipeDelegate
-                height: 55
-                width: parent.width
-
-                ListView.onRemove:SequentialAnimation {
-                    PropertyAction {
-                        target: swipeDelegate
-                        property: "ListView.delayRemove"
-                        value: true
+                delegate: SwipeDelegate {
+                    id:swipeDelegate
+                    height: 55
+                    width: parent.width
+                    Rectangle{
+                        id:itemIcon
+                        anchors.left: parent.left
+                        anchors.leftMargin: 10
+                        anchors.verticalCenter:parent.verticalCenter
+                        width: 35;height: 35
+                        radius: 17.5
+                        color: "green"
                     }
-                    NumberAnimation {
-                        target: swipeDelegate
-                        property: "height"
-                        to: 0
-                        easing.type: Easing.InOutQuad
+
+                    Text {
+                        anchors.left: itemIcon.right
+                        anchors.leftMargin: 10
+                        anchors.verticalCenter:parent.verticalCenter
+                        font.pixelSize:14
+                        text: itemName
                     }
-                    PropertyAction {
-                        target: swipeDelegate
-                        property: "ListView.delayRemove"
-                        value: false
-                    }
-                }
 
-                Rectangle{
-                    id:itemIcon
-                    anchors.left: parent.left
-                    anchors.leftMargin: 10
-                    anchors.verticalCenter:parent.verticalCenter
-                    width: 35;height: 35
-                    radius: 17.5
-                    color: "green"
-                }
 
-                Text {
-                    anchors.left: itemIcon.right
-                    anchors.leftMargin: 10
-                    anchors.verticalCenter:parent.verticalCenter
-                    font.pixelSize:14
-                    text: itemName
-                }
+//                    Repeater.onItemRemoved: SequentialAnimation {
+//                        NumberAnimation {
+//                            target: swipeDelegate
+//                            property: "height"
+//                            to: 0
+//                            easing.type: Easing.InOutQuad
+//                        }
+//                    }
 
-                swipe.right: Label {
-                    id: deleteLabel
-                    text: qsTr("Delete")
-                    color: "white"
-                    verticalAlignment: Label.AlignVCenter
-                    padding: 12
-                    height: parent.height
-                    anchors.right: parent.right
+                    swipe.right: Label {
+                        id: deleteLabel
+                        text: qsTr("Delete")
+                        color: "white"
+                        verticalAlignment: Label.AlignVCenter
+                        padding: 12
+                        height: parent.height
+                        anchors.right: parent.right
 
-                    SwipeDelegate.onClicked: subItemRepeater.model.remove(index)
+                        SwipeDelegate.onClicked: subItemRepeater.model.remove(index)
 
-                    background: Rectangle {
-                        color: deleteLabel.SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"
+                        background: Rectangle {
+                            color: deleteLabel.SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"
+                        }
                     }
                 }
-
 
             }
-
         }
-
     }
 }
-

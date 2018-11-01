@@ -5,5 +5,12 @@
         <file>ChooseClassPage.qml</file>
         <file>TestPage.qml</file>
         <file>GroupManage.qml</file>
+        <file>Testpage2.qml</file>
+        <file>Testpage3.qml</file>
+        <file>Testpage4.qml</file>
+        <file>Images/areow1.png</file>
+        <file>Images/arrow2.png</file>
+        <file>Testpage5.qml</file>
+        <file>ChooseStudentPage.qml</file>
     </qresource>
 </RCC>
