@@ -5,40 +5,32 @@ import QtGraphicalEffects 1.0
 
 Item {
 
-    ListModel{
-        id:stuModel
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-        ListElement{name:"bruce"}
-    }
-
     ListView{
         id:stuView
         anchors.fill: parent
-        model: stuModel
-        delegate: stuCheckDelegateCom
+
+        JSONListModel{
+            id:jsonModel
+            source:"data.txt"
+            query: "$.students[*]"
         }
 
-
-
+        model: jsonModel.model
+        delegate: stuCheckDelegateCom
+    }
 
     Component{
         id:stuCheckDelegateCom
         CheckDelegate {
             id: control
-            text:name
+            text:model.name
             height: 50
             width: parent.width
             checked: false
+
+            onCheckedChanged: {
+                pop.open()
+            }
 
             contentItem: Rectangle{
                 //TODO 更换为image
@@ -46,9 +38,31 @@ Item {
                     id:stuIcon
                     width:35;height: 35
                     radius:17.5
-                    color:"pink"
+                    //                    color:"pink"
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
+
+                    Image {
+                        id: img
+                        anchors.fill: stuIcon
+                        source: model.avt
+                        property bool rounded: true
+                        property bool adapt: true
+
+                        layer.enabled: rounded
+                        layer.effect: OpacityMask {
+                            maskSource: Item {
+                                width: img.width
+                                height: img.height
+                                Rectangle {
+                                    anchors.centerIn: parent
+                                    width: img.adapt ? img.width : Math.min(img.width, img.height)
+                                    height: img.adapt ? img.height : width
+                                    radius: Math.min(width, height)
+                                }
+                            }
+                        }
+                    }
                 }
 
                 Text {
@@ -57,7 +71,8 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     rightPadding: control.indicator.width + control.spacing
                     text: control.text
-                    font: control.font
+                    font.family: "微软雅黑"
+                    font.pixelSize: 14
                     color:"#333333"
                     verticalAlignment: Text.AlignVCenter
                 }

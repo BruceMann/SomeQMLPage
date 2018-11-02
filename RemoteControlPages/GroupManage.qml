@@ -4,14 +4,106 @@ import QtQuick.Layouts 1.11
 import QtGraphicalEffects 1.0
 
 Item {
-    //    width: 200
-    //    height: 300
-
     id:root
-    ListView {
+
+    signal addGroup
+
+    property ListModel nestedModel: nestedModel
+
+    ColumnLayout{
+        spacing:0
         anchors.fill: parent
-        model: nestedModel
-        delegate: categoryDelegate
+        Row{
+            spacing: 0
+            Layout.alignment: Qt.AlignTop
+            Layout.fillWidth: true
+            Layout.preferredHeight:93
+
+            Button{
+                id:freeStudyBtn
+                width: parent.width/2
+                height: parent.height
+
+                contentItem: Text {
+                    id: freeStudyBtnText
+                    text:"自由学习"
+                    color:"white"
+                    font.pixelSize:14
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignBottom
+                    bottomPadding: 13
+                }
+
+                background: Rectangle{
+                    id:freeStudyBtnBg
+                    anchors.fill: parent
+                    color: "#FCB243"
+                    radius:10
+                }
+            }
+
+            Button{
+                id:lockScreenBtn
+                width: parent.width/2
+                height: parent.height
+                contentItem: Text {
+                    id: lockScreenBtnText
+                    text:"锁屏"
+                     color:"white"
+                    font.pixelSize: 14
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignBottom
+                    bottomPadding: 13
+                }
+
+                background: Rectangle{
+                    id:lockScreenBtnBg
+                    anchors.fill: parent
+                    color: "#7045E6"
+                    radius:10
+                }
+            }
+        }
+
+        Rectangle{
+            Layout.fillWidth: true
+            height: 50
+
+            Text {
+                text: "小组"
+                anchors.verticalCenter:parent.verticalCenter
+                font.pixelSize: 16
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                color: "#333333"
+            }
+            Button{
+                id:addGroupBtn
+                anchors.right: parent.right
+                anchors.verticalCenter:parent.verticalCenter
+                width: 18;height: 18
+                background: Rectangle{
+                    anchors.fill: parent
+                    color: "#daa520"
+                }
+
+                onClicked: {
+                    //root.nestedModel.append({"categoryName":"测试小组","collapsed":true,"subItems":[]})
+                    root.addGroup()
+                }
+            }
+
+        }
+
+        ListView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            model: nestedModel
+            delegate: categoryDelegate
+            clip: true
+        }
+
     }
 
     ListModel {
@@ -72,14 +164,14 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     width: 34.9;height: 34.9
                     radius:2
-                    color:"blue"
+                    color:"#1e90ff"
                 }
 
                 Text {
                     anchors.left: sectionIcon.right
                     anchors.leftMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: 24
+                    font.pixelSize: 14
                     text: categoryName
                 }
 
@@ -92,7 +184,6 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent
-
                     // Toggle the 'collapsed' property
                     onClicked: nestedModel.setProperty(index, "collapsed", !collapsed)
                 }
@@ -190,7 +281,7 @@ Item {
 
                 swipe.right: Label {
                     id: deleteLabel
-                    text: qsTr("Delete")
+                    text: qsTr("删除")
                     color: "white"
                     verticalAlignment: Label.AlignVCenter
                     padding: 12
@@ -200,7 +291,7 @@ Item {
                     SwipeDelegate.onClicked: subItemRepeater.model.remove(index)
 
                     background: Rectangle {
-                        color: deleteLabel.SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"
+                        color: deleteLabel.SwipeDelegate.pressed ? Qt.darker("#FF2300", 1.1) : "#FF2300"
                     }
                 }
 

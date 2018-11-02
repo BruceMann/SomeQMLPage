@@ -3,116 +3,181 @@ import QtQuick.Window 2.2
 import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.4
 
-Item{
+
+Item {
     id:root
 
-    Component {
-        id: sectionHeading
+    ColumnLayout{
+        spacing:10
+        anchors.fill: parent
+        Row{
+            spacing: 0
+            Layout.alignment: Qt.AlignTop
+            Layout.fillWidth: true
+            Layout.preferredHeight:93
 
-        Rectangle {
-            width: root.width
-            height: 50
-            color: "lightsteelblue"
-            Text {
-                text: section
-                font.bold: true
-                font.pixelSize: 20
-                anchors.centerIn: parent
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
+            Button{
+                id:freeStudyBtn
+                width: parent.width/2
+                height: parent.height
+
+                contentItem: Text {
+                    id: freeStudyBtnText
+                    text:"自由学习"
+                    font.pixelSize: 14
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignBottom
+                    bottomPadding: 13
+                }
+
+                background: Rectangle{
+                    id:freeStudyBtnBg
+                    anchors.fill: parent
+                    color: "#FCB243"
+                    radius:10
+                }
             }
 
-            MouseArea{
-                anchors.fill: parent
-                onClicked: {
-                    console.log(section)
+            Button{
+                id:lockScreenBtn
+                width: parent.width/2
+                height: parent.height
+                contentItem: Text {
+                    id: lockScreenBtnText
+                    text:"锁屏"
+                    font.pixelSize: 14
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignBottom
+                    bottomPadding: 13
+                }
+
+                background: Rectangle{
+                    id:lockScreenBtnBg
+                    anchors.fill: parent
+                    color: "#7045E6"
+                    radius:10
                 }
             }
         }
-    }
 
-    Component{
-        id:itemDelegate
         Rectangle{
-            id:itemBox
-            width: root.width
-            height:50
-            RowLayout{
-                spacing: 10
-                Layout.alignment: Qt.AlignLeft
-                Layout.fillWidth: true
-
-                Rectangle{
-                    width: 10
-                    height: 10
-                    color:"red"
-                    Layout.leftMargin: 10
-                }
-
-                Text {
-                    text: name
-                    font.pixelSize: 18
-                }
-            }
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: "#696969"
         }
-    }
-
-
-    ListModel{
-        id:animalsModel
-        ListElement{
-            name:"ggg"
-            team:"Small"
-        }
-        ListElement{
-            name:"Parrot"
-            team:"Small"
-        }
-        ListElement{
-            name:"Rabbit"
-            team:"Small"
-        }
-
-        ListElement{
-            name:"Dog"
-            team:"Medium"
-        }
-        ListElement{
-            name:"Cat"
-            team:"Medium"
-        }
-
-        ListElement{
-            name:"KKK"
-            team:"Large"
-        }
-        ListElement{
-            name:"Elephant"
-            team:"Large"
-        }
-        ListElement{
-            name:"Tiger"
-            team:"Large"
-        }
-
-    }
-
-
-    ListView {
-        id: view
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        width: parent.width
-        model: animalsModel
-        delegate: itemDelegate
-
-        section.property: "team"
-        section.criteria: ViewSection.FullString
-        section.delegate: sectionHeading
     }
 }
 
-/*
+    //Item{
+    //    id:root
+
+    //    Component {
+    //        id: sectionHeading
+
+    //        Rectangle {
+    //            width: root.width
+    //            height: 50
+    //            color: "lightsteelblue"
+    //            Text {
+    //                text: section
+    //                font.bold: true
+    //                font.pixelSize: 20
+    //                anchors.centerIn: parent
+    //                verticalAlignment: Text.AlignVCenter
+    //                horizontalAlignment: Text.AlignHCenter
+    //            }
+
+    //            MouseArea{
+    //                anchors.fill: parent
+    //                onClicked: {
+    //                    console.log(section)
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    Component{
+    //        id:itemDelegate
+    //        Rectangle{
+    //            id:itemBox
+    //            width: root.width
+    //            height:50
+    //            RowLayout{
+    //                spacing: 10
+    //                Layout.alignment: Qt.AlignLeft
+    //                Layout.fillWidth: true
+
+    //                Rectangle{
+    //                    width: 10
+    //                    height: 10
+    //                    color:"red"
+    //                    Layout.leftMargin: 10
+    //                }
+
+    //                Text {
+    //                    text: name
+    //                    font.pixelSize: 18
+    //                }
+    //            }
+    //        }
+    //    }
+
+
+    //    ListModel{
+    //        id:animalsModel
+    //        ListElement{
+    //            name:"ggg"
+    //            team:"Small"
+    //        }
+    //        ListElement{
+    //            name:"Parrot"
+    //            team:"Small"
+    //        }
+    //        ListElement{
+    //            name:"Rabbit"
+    //            team:"Small"
+    //        }
+
+    //        ListElement{
+    //            name:"Dog"
+    //            team:"Medium"
+    //        }
+    //        ListElement{
+    //            name:"Cat"
+    //            team:"Medium"
+    //        }
+
+    //        ListElement{
+    //            name:"KKK"
+    //            team:"Large"
+    //        }
+    //        ListElement{
+    //            name:"Elephant"
+    //            team:"Large"
+    //        }
+    //        ListElement{
+    //            name:"Tiger"
+    //            team:"Large"
+    //        }
+
+    //    }
+
+
+    //    ListView {
+    //        id: view
+    //        anchors.top: parent.top
+    //        anchors.bottom: parent.bottom
+    //        width: parent.width
+    //        model: animalsModel
+    //        delegate: itemDelegate
+
+    //        section.property: "team"
+    //        section.criteria: ViewSection.FullString
+    //        section.delegate: sectionHeading
+    //    }
+    //}
+
+    /*
 Rectangle{
     id:root
     anchors.fill:parent

@@ -12,5 +12,12 @@
         <file>Images/arrow2.png</file>
         <file>Testpage5.qml</file>
         <file>ChooseStudentPage.qml</file>
+        <file>QAbsListModelTest.qml</file>
+        <file>AddGroupDialog.qml</file>
+        <file>Example.qml</file>
+        <file>jsonData.txt</file>
+        <file>JSONListModel.qml</file>
+        <file>jsonpath.js</file>
+        <file>data.txt</file>
     </qresource>
 </RCC>
