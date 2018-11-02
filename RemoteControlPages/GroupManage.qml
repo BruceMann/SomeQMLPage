@@ -100,7 +100,7 @@ Item {
 
             Loader {
                 id: subItemLoader
-                height:item.model.count*55
+                height:collapsed?0:subItemModel.count*55
 
                 Behavior on height {
                     NumberAnimation{
@@ -108,12 +108,20 @@ Item {
                     }
                 }
 
+                Behavior on opacity {
+                    NumberAnimation{
+                        duration: 500
+                    }
+                }
+
                 // This is a workaround for a bug/feature in the Loader element. If sourceComponent is set to null
                 // the Loader element retains the same height it had when sourceComponent was set. Setting visible
                 // to false makes the parent Column treat it as if it's height was 0.
-                visible: !collapsed
+
+                //                visible: !collapsed
+                opacity:collapsed? 0.0:1.0
                 property variant subItemModel : subItems
-                sourceComponent: collapsed ? null : subItemColumnDelegate
+                sourceComponent: subItemColumnDelegate
                 onStatusChanged: if (status == Loader.Ready) item.model = subItemModel
             }
         }
@@ -121,7 +129,6 @@ Item {
 
     Component {
         id: subItemColumnDelegate
-        //        Column {
 
         ListView {
             clip:true
@@ -142,11 +149,19 @@ Item {
                         property: "ListView.delayRemove"
                         value: true
                     }
-                    NumberAnimation {
-                        target: swipeDelegate
-                        property: "height"
-                        to: 0
-                        easing.type: Easing.InOutQuad
+                    ParallelAnimation{
+                        NumberAnimation {
+                            target: swipeDelegate
+                            property: "height"
+                            to: 0
+                            easing.type: Easing.Linear
+                        }
+                        NumberAnimation{
+                            target: swipeDelegate
+                            property: "opacity"
+                            to:0.0
+                            easing.type: Easing.Linear
+                        }
                     }
                     PropertyAction {
                         target: swipeDelegate
