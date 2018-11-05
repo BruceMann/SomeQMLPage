@@ -16,7 +16,13 @@ Dialog {
 
     contentItem: TextField{
         id:inputText
+        text: ""
     }
 
-    onAccepted: addgroup(inputText.text)
+    onAccepted: {
+        stackView.push(chooseStudentPage)
+        addgroup(inputText.text)
+        inputText.text = ""
+    }
+
 }

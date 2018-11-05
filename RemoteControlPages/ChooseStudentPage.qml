@@ -3,20 +3,126 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.11
 import QtGraphicalEffects 1.0
 
+import com.fulaan.helper 1.0
+
 Item {
+    id:root
+    property alias coverOpacity: coverRect.opacity
+    property string groupName
 
-    ListView{
-        id:stuView
+    signal addItem(var itemName)
+
+    function parseData(resultModel){
+        var data=JSON.parse(resultModel)
+        for(var i=0;i<data.students.length;i++){
+            //console.log("name "+data.students[i].name+"avt "+data.students[i].avt)
+            studentModel.append({"name":data.students[i].name,"avt":data.students[i].avt,"checked":false})
+        }
+    }
+
+    function addCheckedItem(){
+        var itemNum = studentModel.count
+        for(var i=0;i<itemNum;i++)
+        {
+            var data = studentModel.get(i)
+            if(data.checked===true){
+                console.log(data.name)
+
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        var param = {classId: g_data.classId};
+        network.jsGet(Fulaan.E_GetClassMembers, param, function (res){
+            if (res.resultType === Fulaan.E_NetOK) {
+                parseData(res.resultContent)
+            } else {
+                toast.show(res.resultContent)
+            }
+        })
+    }
+
+    Rectangle {
+        id: coverRect
         anchors.fill: parent
+        color: "#cc000000"
+        opacity: 0.0
+        z: 1
 
-        JSONListModel{
-            id:jsonModel
-            source:"data.txt"
-            query: "$.students[*]"
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 500
+            }
+        }
+    }
+
+    ColumnLayout{
+        anchors.fill: parent
+        spacing: 0
+        Rectangle{
+            id:title
+            height: 50
+            Layout.fillWidth: true
+            //        Image {
+            //            id: arrowImage
+            //            source:""
+            //        }
+
+            Button{
+                anchors.left: parent.left
+                text:"课堂管理"
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: qsTr("添加组员")
+            }
+
+            Button{
+                anchors.right: parent.right
+                text:"完成"
+
+                onClicked: {
+                    console.log("GGGGGGGGGGG")
+                    var itemNum = studentModel.count
+                    for(var i=0;i<itemNum;i++)
+                    {
+                        var data = studentModel.get(i)
+                        if(data.checked===true){
+                            console.log(data.name)
+                            addItem(data.name)
+                        }
+                    }
+                    stackView.pop()
+                }
+            }
         }
 
-        model: jsonModel.model
-        delegate: stuCheckDelegateCom
+        Rectangle{
+            height: 47
+            Layout.fillWidth: true
+            color:"#EFEFF4"
+            Text {
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                text: qsTr("学生列表")
+            }
+        }
+
+        ListView{
+            id:stuView
+            clip:true
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+
+            model: studentModel
+            delegate: stuCheckDelegateCom
+        }
+
+        AllStudentModel{
+            id:studentModel
+        }
     }
 
     Component{
@@ -29,16 +135,14 @@ Item {
             checked: false
 
             onCheckedChanged: {
-                pop.open()
+                model.checked = !model.checked
             }
 
             contentItem: Rectangle{
-                //TODO 更换为image
                 Rectangle{
                     id:stuIcon
                     width:35;height: 35
                     radius:17.5
-                    //                    color:"pink"
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
 

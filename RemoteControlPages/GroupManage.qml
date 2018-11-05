@@ -3,12 +3,37 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.11
 import QtGraphicalEffects 1.0
 
+import com.fulaan.helper 1.0
+
 Item {
     id:root
 
     signal addGroup
 
-    property ListModel nestedModel: nestedModel
+    property string addGroupName
+
+
+    AddGroupDialog{
+        id:addGroupDialog
+        parent: stackView
+        onAddgroup: {
+            nestedModel.addGroupName(groupName)
+            addGroupName = groupName
+        }
+    }
+
+
+    Component {
+        id:chooseStudentPage
+        ChooseStudentPage{
+            onAddItem:{
+                console.log(addGroupName+"      "+itemName)
+                nestedModel.addGroupItem(addGroupName,itemName)
+            }
+        }
+    }
+
+    NestedModel{id:nestedModel}
 
     ColumnLayout{
         spacing:0
@@ -49,7 +74,7 @@ Item {
                 contentItem: Text {
                     id: lockScreenBtnText
                     text:"锁屏"
-                     color:"white"
+                    color:"white"
                     font.pixelSize: 14
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignBottom
@@ -89,104 +114,167 @@ Item {
                 }
 
                 onClicked: {
-                    //root.nestedModel.append({"categoryName":"测试小组","collapsed":true,"subItems":[]})
-                    root.addGroup()
+                    addGroupDialog.open()
                 }
             }
-
         }
 
         ListView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            model: nestedModel
-            delegate: categoryDelegate
-            clip: true
-        }
-
-    }
-
-    ListModel {
-        id: nestedModel
-        ListElement {
-            categoryName: "牛津剑桥毛毛雨"
-            collapsed: true
-
-            // A ListElement can't contain child elements, but it can contain
-            // a list of elements. A list of ListElements can be used as a model
-            // just like any other model type.
-            subItems: [
-                ListElement { itemName: "郭德纲" },
-                ListElement { itemName: "于玉玉" },
-                ListElement { itemName: "牛顿" }
-                //                ListElement { itemName: "Brains" }
-            ]
-        }
-
-        ListElement {
-            categoryName: "考哈佛 so easy"
-            collapsed: true
-            subItems: [
-                ListElement { itemName: "Orange" },
-                ListElement { itemName: "Apple" },
-                ListElement { itemName: "Pear" },
-                ListElement { itemName: "Lemon" }
-            ]
-        }
-
-        ListElement {
-            categoryName: "目标北大小组"
-            collapsed: true
-            subItems: [
-                ListElement { itemName: "Nissan" },
-                ListElement { itemName: "Toyota" }
-                //                ListElement { itemName: "Chevy" },
-                //                ListElement { itemName: "Audi" }
-            ]
+            model: nestedModel.model
+            delegate:categoryDelegate
         }
     }
 
-    Component {
-        id: categoryDelegate
-        Column {
-            width: root.width
+    Component{
+        id:categoryDelegate
+        Column{
+            spacing: 0
+            width: parent.width
 
-            Rectangle {
-                id: categoryItem
-                color: "#FFFFFF"
-                height: 55
+            SwipeDelegate{
+                id:sDelegat
                 width: parent.width
+                height: 55
 
-                //icon  TODO: 更换成image
-                Rectangle{
-                    id:sectionIcon
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 34.9;height: 34.9
-                    radius:2
-                    color:"#1e90ff"
+                ListView.onRemove:SequentialAnimation {
+                    PropertyAction {
+                        target: sDelegat
+                        property: "ListView.delayRemove"
+                        value: true
+                    }
+                    ParallelAnimation{
+                        NumberAnimation {
+                            target: sDelegat
+                            property: "height"
+                            to: 0
+                            easing.type: Easing.Linear
+                        }
+                        NumberAnimation{
+                            target: sDelegat
+                            property: "opacity"
+                            to:0.0
+                            easing.type: Easing.Linear
+                        }
+                    }
+                    PropertyAction {
+                        target: sDelegat
+                        property: "ListView.delayRemove"
+                        value: false
+                    }
                 }
 
-                Text {
-                    anchors.left: sectionIcon.right
-                    anchors.leftMargin: 10
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: 14
-                    text: categoryName
+                contentItem:Rectangle {
+                    id: categoryItem
+                    color: "#FFFFFF"
+                    height: parent.height
+                    width: parent.width
+
+                    //icon  TODO: 更换成image
+                    Rectangle{
+                        id:sectionIcon
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 34.9;height: 34.9
+                        radius:2
+                        color:"#1e90ff"
+                    }
+
+                    Text {
+                        anchors.left: sectionIcon.right
+                        anchors.leftMargin: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.pixelSize: 14
+                        text: categoryName
+                    }
+
+                    // arrow  image
+                    Image{
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        source: collapsed?"qrc:/images/areow1.png":"qrc:/images/arrow2.png"
+                    }
+
                 }
 
-                // arrow  image
-                Image{
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: collapsed?"qrc:/Images/areow1.png":"qrc:/Images/arrow2.png"
+                Component {
+                    id: component
+
+                    Rectangle {
+                        color: SwipeDelegate.pressed ? "#333" : "#444"
+                        width:editbtn.width+addbtn.width+delbtn.width
+                        height: parent.height
+                        anchors.right: parent.right
+                        clip: true
+
+                        Button{
+                            id:editbtn
+                            height: parent.height
+                            width: 60
+                            anchors.right: addbtn.left
+                            background: Rectangle{
+                                color:"#C2C2C2"
+                                anchors.fill: parent
+                            }
+                            contentItem: Text {
+                                text: qsTr("编辑")
+                                verticalAlignment: Text.AlignVCenter
+                                horizontalAlignment: Text.AlignHCenter
+                                color:"#FFFFFF"
+                            }
+                        }
+                        Button{
+                            id:addbtn
+                            height: parent.height
+                            width: 72
+                            anchors.right: delbtn.left
+
+                            background: Rectangle{
+                                color:"#FCB243"
+                                anchors.fill: parent
+                            }
+                            contentItem: Text {
+                                text: qsTr("添加组员")
+                                verticalAlignment: Text.AlignVCenter
+                                horizontalAlignment: Text.AlignHCenter
+                                color:"#FFFFFF"
+                            }
+                            onClicked: {
+                                addGroupName=nestedModel.model.get(index).categoryName
+                                nestedModel.addGroupName(addGroupName)
+                                console.log(addGroupName)
+                                stackView.push(chooseStudentPage)
+                            }
+                        }
+                        Button{
+                            id:delbtn
+                            height: parent.height
+                            width: 60
+                            anchors.right: parent.right
+
+                            background: Rectangle{
+                                color:"#FF3B30"
+                                anchors.fill: parent
+                            }
+                            contentItem: Text {
+                                text: qsTr("删除")
+                                verticalAlignment: Text.AlignVCenter
+                                horizontalAlignment: Text.AlignHCenter
+                                color:"#FFFFFF"
+                            }
+                            onClicked: {
+                                nestedModel.deleteGroup(index)
+                            }
+                        }
+                    }
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    // Toggle the 'collapsed' property
-                    onClicked: nestedModel.setProperty(index, "collapsed", !collapsed)
-                }
+                swipe.right:component
+
+                onClicked: nestedModel.model.setProperty(index, "collapsed", !collapsed)
+
+                clip: true
             }
 
             Loader {
@@ -205,13 +293,8 @@ Item {
                     }
                 }
 
-                // This is a workaround for a bug/feature in the Loader element. If sourceComponent is set to null
-                // the Loader element retains the same height it had when sourceComponent was set. Setting visible
-                // to false makes the parent Column treat it as if it's height was 0.
-
-                //                visible: !collapsed
                 opacity:collapsed? 0.0:1.0
-                property variant subItemModel : subItems
+                property variant subItemModel :subItems
                 sourceComponent: subItemColumnDelegate
                 onStatusChanged: if (status == Loader.Ready) item.model = subItemModel
             }
@@ -225,9 +308,8 @@ Item {
             clip:true
             property alias model : subItemRepeater.model
             width: root.width
-            height: model.length*55
+            height: nestedModel.count*55
             id: subItemRepeater
-
 
             delegate: SwipeDelegate {
                 id:swipeDelegate
@@ -297,9 +379,7 @@ Item {
 
 
             }
-
         }
-
     }
 }
 
